@@ -33,9 +33,9 @@ type Interface interface {
 	// Less reports whether the element with index i should sort before
 	// element with index j.  It induces a total ordering on the collection.
 	// Typically Less(i, j) = Mass(i) < Mass(j).
-	Less(i, j int) bool
+	// Less(i, j int) bool
 	// Swap swaps the elements with indexes i and j
-	Swap(i, j int) bool
+	// Swap(i, j int) bool
 	// Mass reports the mass/norm/value of the element indexed by i.
 	Mass(i int) float64
 }
