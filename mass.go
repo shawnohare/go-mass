@@ -35,9 +35,23 @@ type Interface interface {
 	// Typically Less(i, j) = Mass(i) < Mass(j).
 	// Less(i, j int) bool
 	// Swap swaps the elements with indexes i and j
-	// Swap(i, j int) bool
+	Swap(i, j int)
 	// Mass reports the mass/norm/value of the element indexed by i.
 	Mass(i int) float64
+}
+
+// Sorter sorts  an Interface with respect to its Mass method.
+type Sorter struct {
+	I *Interface
+}
+
+func (s Sorter) Len() int           { return s.I.Len() }
+func (s Sorter) Less(i, j int) bool { return s.I.Mass(i) < s.I.Mass(j) }
+func (s Sorter) Swap(i, j int)      { s.I.Swap(i, j) }
+
+func Sort(I Interface) {
+	sorter := Sorter{&I}
+	sort.Sort(sorter)
 }
 
 // NOTE All the methods that follow assume the data has been previously
