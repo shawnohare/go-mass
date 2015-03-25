@@ -40,9 +40,9 @@ type Interface interface {
 	Mass(i int) float64
 }
 
-// Sorter sorts  an Interface with respect to its Mass method.
+// Sorter sorts an Interface with respect to its Mass method.
 type Sorter struct {
-	I *Interface
+	I Interface
 }
 
 func (s Sorter) Len() int           { return s.I.Len() }
@@ -50,7 +50,7 @@ func (s Sorter) Less(i, j int) bool { return s.I.Mass(i) < s.I.Mass(j) }
 func (s Sorter) Swap(i, j int)      { s.I.Swap(i, j) }
 
 func Sort(I Interface) {
-	sorter := Sorter{&I}
+	sorter := Sorter{I}
 	sort.Sort(sorter)
 }
 
