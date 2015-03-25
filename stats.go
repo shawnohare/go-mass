@@ -21,7 +21,7 @@ func Mean(data Interface) float64 {
 	if l == 0 {
 		mean = math.NaN()
 	} else {
-		mean = totalMass / l
+		mean = totalMass / float64(l)
 	}
 
 	return mean
