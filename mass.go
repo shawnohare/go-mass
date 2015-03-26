@@ -35,7 +35,7 @@ type Interface interface {
 	// Typically Less(i, j) = Mass(i) < Mass(j).
 	// Less(i, j int) bool
 	// Swap swaps the elements with indexes i and j
-	Swap(i, j int)
+	// Swap(i, j int)
 	// Mass reports the mass/norm/value of the element indexed by i.
 	Mass(i int) float64
 }
