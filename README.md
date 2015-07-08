@@ -4,3 +4,7 @@ data which have some notion of mass or value.  We chose the name due
 to its length, connotation, and fact it is a real number.  The more
 generic notion of function value does not correspond to a real number,
 at least to the mathematician's mind.
+
+## Version History
+
+- 1.0.0 Tue, 07 Jul 2015 18:41:54 -0700
