@@ -1,13 +1,17 @@
-// Statistical operations with respect the mass.  Values are assumed
+// Package mstats provides some basic statistical functions that
+// act over mass.mass.Collection interfaces to compute statistics on
+// datasets with respect to their mass. Values are assumed
 // to be in the extended real numbers (which includes +, - infinty).
 // When necessary, pre-sorting is assumed.
-package mass
+package mstats
 
 import (
 	"math"
+
+	"github.com/shawnohare/go-mass"
 )
 
-func Statistic(c Collection, stat func([]float64) float64) float64 {
+func Statistic(c mass.Collection, stat func([]float64) float64) float64 {
 	xs := make([]float64, c.Len())
 	for i := range xs {
 		xs[i] = c.Mass(i)
@@ -17,7 +21,7 @@ func Statistic(c Collection, stat func([]float64) float64) float64 {
 }
 
 // Mean returns the mean mass.
-func Mean(data Collection) float64 {
+func Mean(data mass.Collection) float64 {
 	var totalMass float64
 	var mean float64
 	l := data.Len()
@@ -37,7 +41,7 @@ func Mean(data Collection) float64 {
 }
 
 // Min returns the minimal mass and corresponding index.
-func Min(data Collection) (float64, int) {
+func Min(data mass.Collection) (float64, int) {
 	// For finite sets the minimal value is equal to the
 	// greatest lower bound, or infimum. The infimum for
 	// the empty set is vacuously positive infinity.
@@ -59,7 +63,7 @@ func Min(data Collection) (float64, int) {
 }
 
 // Max returns the maximal mass and corresponding index.
-func Max(data Collection) (float64, int) {
+func Max(data mass.Collection) (float64, int) {
 	// For finite sets the maximal value is equal to the
 	// least upper bound, or supremum.  The supremum for
 	// the empty set is vacuously negative infinity.

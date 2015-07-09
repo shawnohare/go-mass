@@ -1,11 +1,4 @@
-// Package mpart provides functions that partition mass.mass.Collection interfaces.
-// We always view the collection, via its natural embedding, as a discrete
-// subset of the reals.  All partition definitions are actually a family
-// of sub-interval cell partitions that induce the same discrete partition
-// over the collection.  That is, individual partition functions
-// return a list of slice points for the collection that defines
-// the partition.
-package mpart
+package mstats
 
 import (
 	"errors"
@@ -14,6 +7,12 @@ import (
 )
 
 // A Partition of a mass.Collection interface into cells.
+// We always view the collection, via its natural embedding, as a discrete
+// subset of the reals.  All partition definitions are actually a family
+// of sub-interval cell partitions that induce the same discrete partition
+// over the collection.  That is, individual partition functions
+// return a list of slice points for the collection that defines
+// the partition.
 type Partition struct {
 	// Slice points that define the partition.
 	Indices []int
@@ -26,7 +25,7 @@ type Partition struct {
 // Make produces a slice of sub-collections according
 // to the input partition indices.  This function assumes that the
 // collection has been previously sorted.
-func Make(c mass.Collection, partition []int) (*Partition, error) {
+func MakePartition(c mass.Collection, partition []int) (*Partition, error) {
 	var err error
 
 	cells, err := makeCells(c, partition)

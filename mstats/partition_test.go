@@ -1,4 +1,4 @@
-package mpart
+package mstats
 
 import (
 	"reflect"
@@ -25,8 +25,8 @@ func TestMakePartition(t *testing.T) {
 	assert.Equal(t, []int{0, 2, 4}, partition.Indices)
 	assert.Equal(t, []float64{1, 5, 9}, partition.Points)
 
-	// Ensure that Make* and Make produce the same output.
-	p2, err := Make(s, partition.Indices)
+	// Ensure that Make* and MakePartition produce the same output.
+	p2, err := MakePartition(s, partition.Indices)
 	assert.Equal(t, partition.Indices, p2.Indices)
 	assert.True(t, reflect.DeepEqual(partition.Cells, p2.Cells))
 
