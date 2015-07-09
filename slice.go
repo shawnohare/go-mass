@@ -1,10 +1,5 @@
 package mass
 
-type Pair struct {
-	Element interface{}
-	Mass    float64
-}
-
 // A Slice is a concrete implementation of a Collection interface
 // that still affords standard slice mechanics.
 type Slice []*Pair
