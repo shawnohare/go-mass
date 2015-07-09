@@ -1,5 +1,5 @@
 // Package mass provides interfaces and function to perform
-// set and statistical  operations on data that has some notion of mass
+// set and statistical operations on data that has some notion of mass
 //  Examples of such data include:
 //
 // - Planets and their masses.
@@ -16,10 +16,6 @@
 // - Select subsets by.
 package mass
 
-import (
-	"sort"
-)
-
 // A Collection is a type that can sorted/partitioned/fetched from and
 // represents an ordered set of objects that can be mapped to a real number.
 type Collection interface {
@@ -29,10 +25,4 @@ type Collection interface {
 	Get(i int) interface{}
 	// Get the ith element's mass.
 	Mass(i int) float64
-}
-
-func Sort(col Collection) Collection {
-	c := NewList(col)
-	sort.Sort(c)
-	return c
 }
