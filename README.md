@@ -16,4 +16,4 @@ this situation is a list, hence we have a Real Embedded List.
 
 ## Version History
 
-- 1.0.0 Fri, 10 Jul 2015 10:17:29 -0700
+- 1.1.0 Fri, 10 Jul 2015 10:17:29 -0700
