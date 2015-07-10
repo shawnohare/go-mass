@@ -2,7 +2,6 @@ package rel
 
 import (
 	"errors"
-	"log"
 	"math"
 )
 
@@ -27,7 +26,6 @@ type Partition struct {
 
 // SampleEqually attempts to sample k := size elements from partition cell.
 func (p *Partition) SampleEqually(size int, replace bool) *Partition {
-	log.Println("Attempting to sample", size, "from each cell.")
 	samplePar := &Partition{
 		Indices: p.Indices,
 		Points:  p.Points,
