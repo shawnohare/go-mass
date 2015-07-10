@@ -2,8 +2,10 @@ package mstats
 
 import (
 	"errors"
-	"github.com/shawnohare/go-mass"
+	"log"
 	"math"
+
+	"github.com/shawnohare/go-mass"
 )
 
 // A Partition of a mass.Collection interface into cells.
@@ -22,6 +24,52 @@ type Partition struct {
 	Cells []mass.Slice
 }
 
+// TODO another Partition.Sample method that tries to sample
+// n points distributed according to the lengths of each cell.
+
+// SampleEqually attempts to sample k := size elements from partition cell.
+func (p *Partition) SampleEqually(size int, replace bool) *Partition {
+	log.Println("Attempting to sample", size, "from each cell.")
+	samplePar := &Partition{
+		Indices: p.Indices,
+		Points:  p.Points,
+		Cells:   make([]mass.Slice, len(p.Cells)),
+	}
+
+	// Sample from each cell in p and make these the cells of a new partition.
+	for i, cell := range p.Cells {
+		samplePar.Cells[i] = Sample(cell, size, replace)
+	}
+
+	return samplePar
+}
+
+// Len computes the size of the union over all cells, i.e., the length
+// of the flat slice.
+func (p *Partition) Len() int {
+	var l int
+	for _, cell := range p.Cells {
+		l += len(cell)
+	}
+	return l
+}
+
+// Take the union over the cells in the partition and produce a single slice.
+func (p *Partition) Flatten() mass.Slice {
+	// Compute the size of the union of the partition.
+
+	flat := make(mass.Slice, p.Len())
+	var i int
+	for _, cell := range p.Cells {
+		for j := range cell {
+			flat[i] = cell[j]
+			i++
+		}
+	}
+
+	return flat
+}
+
 // Make produces a slice of sub-collections according
 // to the input partition indices.  This function assumes that the
 // collection has been previously sorted.
@@ -38,37 +86,6 @@ func MakePartition(c mass.Collection, partition []int) (*Partition, error) {
 	}
 
 	return p, err
-}
-
-func makeCells(c mass.Collection, partition []int) ([]mass.Slice, error) {
-	if len(partition) < 2 || c.Len() < len(partition)-1 {
-		err := errors.New("Could not make cells.")
-		return nil, err
-	}
-
-	s := mass.MakeSlice(c)
-	numCells := len(partition) - 1
-	ss := make([]mass.Slice, numCells)
-	for i := 0; i < numCells; i++ {
-		start, end := partition[i], partition[i+1]
-		ss[i] = s[start:end]
-	}
-
-	return ss, nil
-}
-
-// makePoints a slice-index partition into
-// a sub-interval partition whose cells have maximum width.
-func makePoints(c mass.Collection, par []int) []float64 {
-	points := make([]float64, len(par))
-	for i, idx := range par {
-		if idx == c.Len() {
-			idx = idx - 1
-		}
-		points[i] = c.Mass(idx)
-	}
-
-	return points
 }
 
 // MakeEqualWidthCells produces a Partition instance with populated cells
@@ -97,7 +114,8 @@ func MakeMinSizeCells(c mass.Collection, n, k int) (*Partition, error) {
 
 // MinSizeCells produces a partition of the previously sorted
 // input mass.Collection into n subinterval cells each of which has at least
-// k elements. The partition tries to be as close to an equal width
+// k elements, if there are sufficiently many distinct elements.
+// The partition tries to be as close to an equal width
 // partition as possible. In particular, when k = 0, the result is
 // an equal width partition.
 func DefineMinSizeCells(c mass.Collection, n, k int) (*Partition, error) {
@@ -132,17 +150,28 @@ func DefineMinSizeCells(c mass.Collection, n, k int) (*Partition, error) {
 			i2 = 0
 		}
 		rightEdge := math.Max(originalEdge, c.Mass(i2))
-		points[j] = rightEdge
 
 		// Add elements into the cell until none belong or there are too
 		// few remaining elements to distribute amongst the remaining cells.
 		elemsLeft := N - i
-		elemsToDistribute := k * (n - j - 1)
-		for c.Mass(i) <= rightEdge && elemsLeft > elemsToDistribute {
+		elemsToDistribute := k * (n - j)
+		// Add all elements that have the same mass as the last element added.
+		// This loop does not face the same breaking conditions, so it is separate.
+		for c.Mass(i) == rightEdge {
+			i++
+			elemsLeft--
+		}
+		// Now add elements with the full condition applied.
+		for c.Mass(i) < rightEdge && elemsLeft > elemsToDistribute {
 			i++
 			elemsLeft--
 		}
 		parIdxs[j] = i
+		// Readjust edge again if not attempting to create equal width bins.
+		if k > 0 {
+			rightEdge = math.Min(rightEdge, c.Mass(i))
+		}
+		points[j] = rightEdge
 	}
 
 	def := &Partition{
@@ -151,4 +180,35 @@ func DefineMinSizeCells(c mass.Collection, n, k int) (*Partition, error) {
 	}
 
 	return def, nil
+}
+
+func makeCells(c mass.Collection, partition []int) ([]mass.Slice, error) {
+	if len(partition) < 2 || c.Len() < len(partition)-1 {
+		err := errors.New("Could not make cells.")
+		return nil, err
+	}
+
+	s := mass.MakeSlice(c)
+	numCells := len(partition) - 1
+	ss := make([]mass.Slice, numCells)
+	for i := 0; i < numCells; i++ {
+		start, end := partition[i], partition[i+1]
+		ss[i] = s[start:end]
+	}
+
+	return ss, nil
+}
+
+// makePoints a slice-index partition into
+// a sub-interval partition whose cells have maximum width.
+func makePoints(c mass.Collection, par []int) []float64 {
+	points := make([]float64, len(par))
+	for i, idx := range par {
+		if idx == c.Len() {
+			idx = idx - 1
+		}
+		points[i] = c.Mass(idx)
+	}
+
+	return points
 }

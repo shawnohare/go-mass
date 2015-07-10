@@ -16,10 +16,19 @@ func MapPairs(m Model, inputs []interface{}) mass.Slice {
 	return outputs
 }
 
-func Map(m Model, inputs []interface{}) []float64 {
+func MapEval(m Model, inputs []interface{}) []float64 {
 	outputs := make([]float64, len(inputs))
 	for i, x := range inputs {
 		outputs[i] = m.Eval(x)
 	}
 	return outputs
 }
+
+//
+// func MapApply(m Model, inputs []interface{}) []float64 {
+// 	outputs := make(mass.Slice, len(inputs))
+// 	for i, x := range inputs {
+// 		outputs[i] = m.Apply(x)
+// 	}
+// 	return outputs
+// }

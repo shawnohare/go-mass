@@ -11,7 +11,8 @@ import (
 	"github.com/shawnohare/go-mass"
 )
 
-func Statistic(c mass.Collection, stat func([]float64) float64) float64 {
+// ComputeStat computes a real-valued statistic over a mass.Collection.
+func ComputeStat(c mass.Collection, stat func([]float64) float64) float64 {
 	xs := make([]float64, c.Len())
 	for i := range xs {
 		xs[i] = c.Mass(i)
@@ -24,62 +25,60 @@ func Statistic(c mass.Collection, stat func([]float64) float64) float64 {
 func Mean(data mass.Collection) float64 {
 	var totalMass float64
 	var mean float64
+
 	l := data.Len()
+
+	if l == 0 {
+		return math.NaN()
+	}
 
 	for i := 0; i < l; i++ {
 		totalMass += data.Mass(i)
 	}
-
-	// Deal with empty set case.
-	if l == 0 {
-		mean = math.NaN()
-	} else {
-		mean = totalMass / float64(l)
-	}
-
+	mean = totalMass / float64(l)
 	return mean
 }
 
-// Min returns the minimal mass and corresponding index.
-func Min(data mass.Collection) (float64, int) {
+// Min returns the element with the minimal mass.
+func Min(data mass.Collection) interface{} {
 	// For finite sets the minimal value is equal to the
 	// greatest lower bound, or infimum. The infimum for
 	// the empty set is vacuously positive infinity.
-	min := math.Inf(1)
-	index := -1
-	if data.Len() > 0 {
-		min = data.Mass(0)
-		index = 0
-		for i := 1; i < data.Len(); i++ {
-			mass := data.Mass(i)
-			if mass < min {
-				index = i
-				min = mass
-			}
+	if data.Len() == 0 {
+		return nil
+	}
+
+	min := data.Mass(0)
+	index := 0
+	for i := 1; i < data.Len(); i++ {
+		mass := data.Mass(i)
+		if mass < min {
+			index = i
+			min = mass
 		}
 	}
 
-	return min, index
+	return data.Get(index)
 }
 
-// Max returns the maximal mass and corresponding index.
-func Max(data mass.Collection) (float64, int) {
+// Max returns the element with the minimal mass.
+func Max(data mass.Collection) interface{} {
 	// For finite sets the maximal value is equal to the
 	// least upper bound, or supremum.  The supremum for
 	// the empty set is vacuously negative infinity.
-	max := math.Inf(-1)
-	index := -1
-	if data.Len() > 0 {
-		max := data.Mass(0)
-		index = 0
-		for i := 1; i < data.Len(); i++ {
-			mass := data.Mass(i)
-			if mass > max {
-				index = i
-				max = mass
-			}
+	if data.Len() == 0 {
+		return nil
+	}
+
+	max := data.Mass(0)
+	index := 0
+	for i := 1; i < data.Len(); i++ {
+		mass := data.Mass(i)
+		if mass > max {
+			index = i
+			max = mass
 		}
 	}
 
-	return max, index
+	return data.Get(index)
 }
