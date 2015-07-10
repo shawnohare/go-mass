@@ -6,11 +6,10 @@ type Pair struct {
 	Value   float64
 }
 
-// MakePair evaluates the input function f at the input x and returns
-// the associated (element, mass) pair.
-func MakePair(f func(interface{}) float64, x interface{}) *Pair {
+// NewPair creates a *Pair from the input interface and value.
+func NewPair(elem interface{}, val float64) *Pair {
 	return &Pair{
-		Element: x,
-		Value:   f(x),
+		Element: elem,
+		Value:   val,
 	}
 }
