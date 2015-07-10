@@ -1,20 +1,20 @@
-package mstats
+package rel
 
 import (
 	"reflect"
 	"testing"
 
-	"github.com/shawnohare/go-mass"
+	
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMakePartition(t *testing.T) {
 	var err error
-	var s mass.Slice
+	var s Slice
 	// A partition variable.
 
 	// Test a basic two cell equal width partition.
-	s = mass.Slice{
+	s = Slice{
 		{0, 1},
 		{1, 2.2},
 		{2, 8.2},
@@ -31,7 +31,7 @@ func TestMakePartition(t *testing.T) {
 	assert.True(t, reflect.DeepEqual(partition.Cells, p2.Cells))
 
 	// Test the resulting cells the actual partition from the definition.
-	expectedPar := []mass.Slice{
+	expectedPar := []Slice{
 		{{0, 1}, {1, 2.2}},
 		{{2, 8.2}, {3, 9}},
 	}
@@ -40,15 +40,15 @@ func TestMakePartition(t *testing.T) {
 
 func TestMinSizeCells(t *testing.T) {
 	var err error
-	var s mass.Slice
+	var s Slice
 	// A partition variable.
 
-	// Test that partitioning the empty mass.Slice returns an error.
-	_, err = DefineMinSizeCells(mass.Slice{}, 1, 0)
+	// Test that partitioning the empty Slice returns an error.
+	_, err = DefineMinSizeCells(Slice{}, 1, 0)
 	assert.NotNil(t, err)
 
 	// Test that the cells can be appropriately re-sized.
-	s = mass.Slice{
+	s = Slice{
 		{nil, 1},
 		{nil, 2},
 		{nil, 2},

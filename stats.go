@@ -1,28 +1,21 @@
-// Package mstats provides some basic statistical functions that
-// act over mass.mass.Collection interfaces to compute statistics on
-// datasets with respect to their mass. Values are assumed
-// to be in the extended real numbers (which includes +, - infinty).
-// When necessary, pre-sorting is assumed.
-package mstats
+package rel
 
 import (
 	"math"
-
-	"github.com/shawnohare/go-mass"
 )
 
-// ComputeStat computes a real-valued statistic over a mass.Collection.
-func ComputeStat(c mass.Collection, stat func([]float64) float64) float64 {
+// ComputeStat computes a real-valued statistic over a List.
+func ComputeStat(c List, stat func([]float64) float64) float64 {
 	xs := make([]float64, c.Len())
 	for i := range xs {
-		xs[i] = c.Mass(i)
+		xs[i] = c.Val(i)
 	}
 
 	return stat(xs)
 }
 
-// Mean returns the mean mass.
-func Mean(data mass.Collection) float64 {
+// Mean returns the mean
+func Mean(data List) float64 {
 	var totalMass float64
 	var mean float64
 
@@ -33,14 +26,14 @@ func Mean(data mass.Collection) float64 {
 	}
 
 	for i := 0; i < l; i++ {
-		totalMass += data.Mass(i)
+		totalMass += data.Val(i)
 	}
 	mean = totalMass / float64(l)
 	return mean
 }
 
-// Min returns the element with the minimal mass.
-func Min(data mass.Collection) interface{} {
+// Min returns the element with the minimal
+func Min(data List) interface{} {
 	// For finite sets the minimal value is equal to the
 	// greatest lower bound, or infimum. The infimum for
 	// the empty set is vacuously positive infinity.
@@ -48,10 +41,10 @@ func Min(data mass.Collection) interface{} {
 		return nil
 	}
 
-	min := data.Mass(0)
+	min := data.Val(0)
 	index := 0
 	for i := 1; i < data.Len(); i++ {
-		mass := data.Mass(i)
+		mass := data.Val(i)
 		if mass < min {
 			index = i
 			min = mass
@@ -61,8 +54,8 @@ func Min(data mass.Collection) interface{} {
 	return data.Get(index)
 }
 
-// Max returns the element with the minimal mass.
-func Max(data mass.Collection) interface{} {
+// Max returns the element with the minimal
+func Max(data List) interface{} {
 	// For finite sets the maximal value is equal to the
 	// least upper bound, or supremum.  The supremum for
 	// the empty set is vacuously negative infinity.
@@ -70,10 +63,10 @@ func Max(data mass.Collection) interface{} {
 		return nil
 	}
 
-	max := data.Mass(0)
+	max := data.Val(0)
 	index := 0
 	for i := 1; i < data.Len(); i++ {
-		mass := data.Mass(i)
+		mass := data.Val(i)
 		if mass > max {
 			index = i
 			max = mass
