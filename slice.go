@@ -4,13 +4,19 @@ package rel
 // that still affords standard slice mechanics.
 type Slice []*Pair
 
-// Implement a List and sort interface.
-func (s Slice) Get(i int) interface{}                 { return s[i].Element }
-func (s Slice) Set(i int, e interface{}, val float64) { s[i] = NewPair(e, val) }
-func (s Slice) Val(i int) float64                     { return s[i].Value }
-func (s Slice) Len() int                              { return len(s) }
-func (s Slice) Less(i, j int) bool                    { return s.Val(i) < s.Val(j) }
-func (s Slice) Swap(i, j int)                         { s[i], s[j] = s[j], s[i] }
+// Set the index of the (element, value) pair to be i,
+// assuming i is strictly less than the length of the Slice.
+func (s Slice) Set(i int, e interface{}, val float64) {
+	s[i] = NewPair(e, val)
+}
+
+// SetPair is the same as Set, but expects a *Pair as input.
+func (s Slice) SetPair(i int, p *Pair) { s[i] = p }
+func (s Slice) Get(i int) interface{}  { return s[i].Element }
+func (s Slice) Val(i int) float64      { return s[i].Value }
+func (s Slice) Len() int               { return len(s) }
+func (s Slice) Less(i, j int) bool     { return s.Val(i) < s.Val(j) }
+func (s Slice) Swap(i, j int)          { s[i], s[j] = s[j], s[i] }
 
 // MakeSlice will produce a Slice instance either from an input List
 // or []float64 slice.  If the input is type []float64, then the
