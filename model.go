@@ -16,7 +16,7 @@ func MapPairs(m Model, inputs []interface{}) Slice {
 }
 
 // MapApply maps the Apply method across an input slice.
-func MapPairs(m Model, inputs []interface{}) Slice {
+func MapApply(m Model, inputs []interface{}) Slice {
 	outputs := make(Slice, len(inputs))
 	for i, x := range inputs {
 		outputs[i] = m.Apply(x)
