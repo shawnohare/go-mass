@@ -3,6 +3,7 @@ package rel
 // An Model interface a real-valued statistical model.
 type Model interface {
 	Eval(interface{}) float64
+	Apply(interface{}) *Pair
 }
 
 // Map a real-valued statistical model over a list of input data.
@@ -10,6 +11,15 @@ func MapPairs(m Model, inputs []interface{}) Slice {
 	outputs := make(Slice, len(inputs))
 	for i, x := range inputs {
 		outputs.Set(i, x, m.Eval(x))
+	}
+	return outputs
+}
+
+// MapApply maps the Apply method across an input slice.
+func MapPairs(m Model, inputs []interface{}) Slice {
+	outputs := make(Slice, len(inputs))
+	for i, x := range inputs {
+		outputs[i] = m.Apply(x)
 	}
 	return outputs
 }
